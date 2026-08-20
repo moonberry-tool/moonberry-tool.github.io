@@ -14,8 +14,7 @@ import {
   ArrowRight,
   Sliders,
   Command,
-  Database,
-  CheckCircle2
+  Database
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -51,25 +50,8 @@ export const Navbar: React.FC = () => {
             <MoonberryLogo size="md" variant="full" />
           </div>
 
-          {/* Center: Phase 4 Completed Tracker Pill & Quick Navigation */}
+          {/* Quick Navigation */}
           <div className="hidden lg:flex items-center gap-4">
-            {/* Phase 1-4 Roadmap Tracker from Vibrant Palette */}
-            <div className="flex items-center bg-white/5 dark:bg-white/5 light:bg-slate-100 rounded-full px-4 py-1.5 gap-3 text-xs font-semibold border border-white/10 dark:border-white/10 light:border-slate-200 select-none">
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
-                ✓ {isRtl ? 'المرحلة 1' : 'P1'}
-              </span>
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
-                ✓ {isRtl ? 'المرحلة 2' : 'P2'}
-              </span>
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
-                ✓ {isRtl ? 'المرحلة 3' : 'P3'}
-              </span>
-              <span className="text-white font-extrabold flex items-center gap-1.5 bg-gradient-to-r from-[#f43f5e] to-[#8b5cf6] px-3 py-0.5 rounded-full shadow-[0_0_15px_rgba(244,63,94,0.35)]">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                {isRtl ? 'المرحلة 4: مكتمل للإنتاج' : 'Phase 4: Complete'}
-              </span>
-            </div>
-
             {viewMode === 'landing' && (
               <nav className="flex items-center gap-1 bg-white/5 dark:bg-white/5 light:bg-slate-100 border border-white/10 dark:border-white/10 light:border-slate-200 p-1 rounded-full text-xs font-medium">
                 <button
