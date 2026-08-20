@@ -1,0 +1,6 @@
+{
+  "name": "Moonberry",
+  "description": "Creative Tools for Designers - Professional design utilities including palette generator, font pairing, safe area grids, and curated prompts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
