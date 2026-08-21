@@ -51,7 +51,7 @@ the ground up (not bolted on afterward).
 | 💡 **Curated Prompts Library** | مكتبة برومبتات تصميم احترافية جاهزة للاستخدام |
 | 🌗 **Dark / Light Theme** | تبديل سلس بين الوضع الداكن والفاتح |
 | 🌍 **Full Arabic (RTL) Support** | دعم كامل ومدروس للغة العربية واتجاه الكتابة |
-| ⚡ **Instant & Free** | مفيش تسجيل، مفيش انتظار — افتح واستخدم فورًا |
+| ⚡ **Free Tier** | مهلة مجانية لكي تجرب جميع الميزات |
 
 <br/>
 
