@@ -1,12 +1,10 @@
 import { GridFormat, PromptCategory, PromptItem, FontPairingPreset } from '../types';
 
 export const INITIAL_PROMPT_CATEGORIES: PromptCategory[] = [
-  { id: 'all', name: 'All Prompts', nameAr: 'جميع البرومبتات', slug: 'all', count: 24 },
+  { id: 'all', name: 'All Prompts', nameAr: 'جميع البرومبتات', slug: 'all', count: 17 },
   { id: 'portrait', name: 'Portrait & Character', nameAr: 'بورتريه وشخصيات', slug: 'portrait', count: 6 },
   { id: 'product', name: 'Product & Mockup', nameAr: 'منتجات وموك أب', slug: 'product', count: 5 },
-  { id: '3d-abstract', name: '3D & Abstract Art', nameAr: 'ثلاثي الأبعاد وتجريدي', slug: '3d-abstract', count: 4 },
   { id: 'luxury', name: 'Luxury & Fashion', nameAr: 'فخامة وأزياء', slug: 'luxury', count: 3 },
-  { id: 'architecture', name: 'Architecture & Interior', nameAr: 'معمار وديكور', slug: 'architecture', count: 3 },
   { id: 'cinematic', name: 'Cinematic & Background', nameAr: 'سينمائي وخلفيات', slug: 'cinematic', count: 3 },
 ];
 
@@ -34,30 +32,6 @@ export const INITIAL_PROMPTS: PromptItem[] = [
     featured: true,
     createdAt: '2026-08-12',
     tags: ['product', 'mockup', 'cosmetics', 'packaging']
-  },
-  {
-    id: 'p-3',
-    title: 'Iridescent 3D Fluid Glass Ribbon Floating in Dark Space',
-    description: 'أشكال ثلاثية الأبعاد سائلة من الزجاج المتقزح بألوان متدرجة تعكس الضوء في فراغ داكن وأنيق.',
-    prompt: 'Abstract 3D iridescent fluid ribbon, chromatic glass refraction, glowing violet and warm peach gradients, floating gracefully in deep space, volumetric soft lighting, Octane render, raytracing, ultra clean smooth surfaces, wallpaper aesthetic --ar 16:9 --v 6.0',
-    categoryId: '3d-abstract',
-    categoryName: '3D & Abstract Art',
-    previewImageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
-    featured: true,
-    createdAt: '2026-08-14',
-    tags: ['3d', 'abstract', 'glass', 'iridescent']
-  },
-  {
-    id: 'p-4',
-    title: 'Brutalist Concrete Pavilion with Curved Glass & Warm Sunset Rays',
-    description: 'تصميم معماري معاصر بكتل خرسانية ونوافذ زجاجية منحنية تتخللها أشعة الشمس الدافئة.',
-    prompt: 'Modern brutalist architectural interior with monolithic smooth concrete pillars, oversized floor-to-ceiling curved glass wall overlooking tranquil desert dunes, golden hour sunset rays casting long warm shadows, architectural digest feature, photorealistic --ar 16:9 --v 6.0',
-    categoryId: 'architecture',
-    categoryName: 'Architecture & Interior',
-    previewImageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-    featured: false,
-    createdAt: '2026-08-15',
-    tags: ['architecture', 'interior', 'sunset', 'minimal']
   },
   {
     id: 'p-5',
