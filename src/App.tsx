@@ -46,7 +46,6 @@ const MainContent: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
       <AppShell>
         {activeTool === 'colors' && <ColorsToolPreview />}
         {activeTool === 'fonts' && <FontsToolPreview />}
@@ -65,4 +64,3 @@ export default function App() {
     </AppProvider>
   );
 }
-
