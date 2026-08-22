@@ -1,6 +1,35 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { ThemeMode, Language, ActiveTool, ViewMode } from '../types';
 
+// Map each tool to its own URL path, and back. Keeps the address bar in sync
+// with the app view, and lets a hard refresh / direct link land on the right tool.
+const TOOL_PATHS: Record<ActiveTool, string> = {
+  colors: '/colors/',
+  fonts: '/fonts/',
+  grid: '/grid/',
+  prompts: '/prompts/',
+  settings: '/settings/',
+  admin: '/admin/',
+};
+
+const PATH_TO_TOOL: Record<string, ActiveTool> = Object.entries(TOOL_PATHS).reduce(
+  (acc, [tool, path]) => {
+    acc[path] = tool as ActiveTool;
+    return acc;
+  },
+  {} as Record<string, ActiveTool>
+);
+
+const getToolFromCurrentPath = (): { tool: ActiveTool; mode: ViewMode } => {
+  const path = window.location.pathname;
+  const normalized = path.endsWith('/') ? path : `${path}/`;
+  const matchedTool = PATH_TO_TOOL[normalized];
+  if (matchedTool) {
+    return { tool: matchedTool, mode: 'app' };
+  }
+  return { tool: 'colors', mode: 'landing' };
+};
+
 interface AppContextType {
   theme: ThemeMode;
   toggleTheme: () => void;
@@ -22,10 +51,45 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<ThemeMode>('dark');
   const [language, setLanguage] = useState<Language>('ar');
-  const [viewMode, setViewMode] = useState<ViewMode>('landing');
-  const [activeTool, setActiveTool] = useState<ActiveTool>('colors');
+
+  const initialRoute = getToolFromCurrentPath();
+  const [viewMode, setViewModeState] = useState<ViewMode>(initialRoute.mode);
+  const [activeTool, setActiveToolState] = useState<ActiveTool>(initialRoute.tool);
+
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
+
+  // Keep the address bar correct for a given tool/mode combo
+  const syncUrl = (tool: ActiveTool, mode: ViewMode) => {
+    const targetPath = mode === 'landing' ? '/' : TOOL_PATHS[tool];
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState({}, '', targetPath);
+    }
+  };
+
+  // Wrapped setters: same signatures the rest of the app already uses,
+  // but they also push the correct URL.
+  const setViewMode = (mode: ViewMode) => {
+    setViewModeState(mode);
+    syncUrl(activeTool, mode);
+  };
+
+  const setActiveTool = (tool: ActiveTool) => {
+    setActiveToolState(tool);
+    setViewModeState('app');
+    syncUrl(tool, 'app');
+  };
+
+  // Handle browser Back / Forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = getToolFromCurrentPath();
+      setActiveToolState(route.tool);
+      setViewModeState(route.mode);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -53,8 +117,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const openTool = (tool: ActiveTool) => {
-    setActiveTool(tool);
-    setViewMode('app');
+    setActiveToolState(tool);
+    setViewModeState('app');
+    syncUrl(tool, 'app');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
