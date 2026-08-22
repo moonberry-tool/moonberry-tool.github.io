@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Moonberry</title>
+    <script>
+      // GitHub Pages has no server-side routing, so a direct visit or refresh on
+      // a deep link like /colors/ returns this 404 page. We redirect back to
+      // index.html while keeping the original path in sessionStorage, and
+      // index.html restores it via history.replaceState before React mounts.
+      sessionStorage.setItem('mb_redirect_path', window.location.pathname);
+      window.location.replace('/');
+    </script>
+  </head>
+  <body></body>
+</html>
+
