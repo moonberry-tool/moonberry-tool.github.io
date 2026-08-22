@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { FontLevel, FontPairingPreset } from '../../types';
 import { INITIAL_FONT_PAIRINGS } from '../../data/initialData';
+import { ARABIC_GOOGLE_FONTS, ENGLISH_GOOGLE_FONTS } from '../../data/googleFonts';
+import { loadGoogleFont } from '../../utils/googleFontLoader';
 import { 
   Type, 
   RefreshCw, 
@@ -29,9 +31,19 @@ export const FontsToolPreview: React.FC = () => {
   const [customTesterTextEn, setCustomTesterTextEn] = useState<string>('Designing the Future of Visual Interfaces');
   const [activeTab, setActiveTab] = useState<'hierarchy' | 'presets' | 'export'>('hierarchy');
 
-  // Google Font Lists
-  const arabicFonts = ['Alexandria', 'Cairo', 'Tajawal', 'Almarai', 'Amiri', 'Changa', 'Readex Pro'];
-  const englishFonts = ['Outfit', 'Plus Jakarta Sans', 'Inter', 'Playfair Display', 'Space Grotesk', 'Cabinet Grotesk', 'Syne'];
+  // Google Font Lists — curated, lazy-loaded on selection (see googleFontLoader)
+  const arabicFonts = ARABIC_GOOGLE_FONTS;
+  const englishFonts = ENGLISH_GOOGLE_FONTS;
+
+  const weightOptions = [
+    { value: '300', label: 'Light' },
+    { value: '400', label: 'Regular' },
+    { value: '500', label: 'Medium' },
+    { value: '600', label: 'SemiBold' },
+    { value: '700', label: 'Bold' },
+    { value: '800', label: 'ExtraBold' },
+    { value: '900', label: 'Black' },
+  ];
 
   const [levels, setLevels] = useState<FontLevel[]>([
     {
@@ -84,7 +96,27 @@ export const FontsToolPreview: React.FC = () => {
     },
   ]);
 
-  // Scales
+  // Lazy-load whichever fonts are actually in use right now (current levels)
+  useEffect(() => {
+    levels.forEach(lvl => loadGoogleFont(lvl.fontName));
+  }, [levels]);
+
+  // Preset mini-previews are always visible on the Presets tab, so load their fonts once
+  useEffect(() => {
+    INITIAL_FONT_PAIRINGS.forEach(preset => {
+      loadGoogleFont(preset.display);
+      loadGoogleFont(preset.body);
+    });
+  }, []);
+
+  const handleWeightChange = (role: string, weightValue: string) => {
+    const weightLabel = weightOptions.find(w => w.value === weightValue)?.label || '';
+    setLevels(prev =>
+      prev.map(lvl => (lvl.role === role ? { ...lvl, weight: `${weightValue} ${weightLabel}` } : lvl))
+    );
+  };
+
+
   const scales = [
     { label: 'Major Second (1.125)', ratio: 1.125, desc: 'Compact / Dense UI' },
     { label: 'Major Third (1.25)', ratio: 1.25, desc: 'Balanced / Web Standard' },
@@ -404,16 +436,16 @@ export const FontsToolPreview: React.FC = () => {
                     {isRtl ? lvl.roleNameAr : lvl.roleNameEn}
                   </span>
                   <span className="text-xs font-mono text-slate-400">
-                    {lvl.fontSize} • {lvl.weight}
+                    {lvl.fontSize}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   {/* Select font */}
                   <select
                     value={lvl.fontName}
                     onChange={e => handleFontChange(lvl.role, e.target.value)}
-                    className="px-3 py-1.5 rounded-full text-xs font-bold bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#8b5cf6]"
+                    className="px-3 py-1.5 rounded-full text-xs font-bold bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#8b5cf6] max-w-[140px]"
                   >
                     <optgroup label="Arabic Fonts">
                       {arabicFonts.map(f => (
@@ -431,6 +463,19 @@ export const FontsToolPreview: React.FC = () => {
                     </optgroup>
                   </select>
 
+                  {/* Select weight */}
+                  <select
+                    value={lvl.weight.split(' ')[0]}
+                    onChange={e => handleWeightChange(lvl.role, e.target.value)}
+                    className="px-3 py-1.5 rounded-full text-xs font-bold bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#8b5cf6]"
+                  >
+                    {weightOptions.map(w => (
+                      <option key={w.value} value={w.value} className="bg-[#0f0714] text-white">
+                        {w.label}
+                      </option>
+                    ))}
+                  </select>
+
                   <button
                     onClick={() => toggleLevelLock(lvl.role)}
                     className={`p-2 rounded-full border transition-all ${
@@ -445,21 +490,57 @@ export const FontsToolPreview: React.FC = () => {
                 </div>
               </div>
 
-              {/* Visual Rendered Specimen */}
-              <div className="space-y-3">
-                <p
-                  style={{ fontFamily: lvl.fontName, fontSize: lvl.fontSize, lineHeight: lvl.lineHeight }}
-                  className="text-white font-bold transition-all"
-                >
-                  {customTesterTextAr || lvl.sampleTextAr}
-                </p>
-                <p
-                  style={{ fontFamily: lvl.fontName, fontSize: `calc(${lvl.fontSize} * 0.85)`, lineHeight: lvl.lineHeight }}
-                  className="text-slate-300 font-medium transition-all"
-                  dir="ltr"
-                >
-                  {customTesterTextEn || lvl.sampleTextEn}
-                </p>
+              {/* Visual Rendered Specimen — split AR / EN panels */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Arabic panel */}
+                <div className="relative p-5 rounded-2xl bg-black/40 border border-white/10 overflow-hidden">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-extrabold tracking-widest text-[#8b5cf6] uppercase">AR</span>
+                    <span
+                      className="text-2xl text-white/20 select-none"
+                      style={{ fontFamily: lvl.fontName, fontWeight: lvl.weight.split(' ')[0] }}
+                    >
+                      أب
+                    </span>
+                  </div>
+                  <p
+                    dir="rtl"
+                    style={{
+                      fontFamily: lvl.fontName,
+                      fontSize: lvl.fontSize,
+                      lineHeight: lvl.lineHeight,
+                      fontWeight: lvl.weight.split(' ')[0],
+                    }}
+                    className="text-white transition-all break-words"
+                  >
+                    {customTesterTextAr || lvl.sampleTextAr}
+                  </p>
+                </div>
+
+                {/* English panel */}
+                <div className="relative p-5 rounded-2xl bg-black/40 border border-white/10 overflow-hidden">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-extrabold tracking-widest text-[#f43f5e] uppercase">EN</span>
+                    <span
+                      className="text-2xl text-white/20 select-none"
+                      style={{ fontFamily: lvl.fontName, fontWeight: lvl.weight.split(' ')[0] }}
+                    >
+                      Aa
+                    </span>
+                  </div>
+                  <p
+                    dir="ltr"
+                    style={{
+                      fontFamily: lvl.fontName,
+                      fontSize: `calc(${lvl.fontSize} * 0.85)`,
+                      lineHeight: lvl.lineHeight,
+                      fontWeight: lvl.weight.split(' ')[0],
+                    }}
+                    className="text-slate-200 transition-all break-words"
+                  >
+                    {customTesterTextEn || lvl.sampleTextEn}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
