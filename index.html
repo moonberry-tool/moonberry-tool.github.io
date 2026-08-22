@@ -4,6 +4,17 @@
     <meta name="google-site-verification" content="x0F6ZwXAfjJoddx3bxB1htrnfGfgm_TSFm5JLhir1VA" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Companion to 404.html: if we were bounced here from a deep link
+      // (e.g. /colors/), restore that path in the address bar before React mounts.
+      (function () {
+        var redirectPath = sessionStorage.getItem('mb_redirect_path');
+        if (redirectPath) {
+          sessionStorage.removeItem('mb_redirect_path');
+          window.history.replaceState({}, '', redirectPath);
+        }
+      })();
+    </script>
     <title>Moonberry — Color Palette Generator, Font Pairing & Design Tools for Designers</title>
     <meta name="description" content="Moonberry هي مجموعة أدوات إبداعية مجانية للمصممين: مولد باليتات ألوان (color palette generator)، أداة تناسق خطوط (font pairing)، مقاسات ومناطق أمان (safe area grids)، ومكتبة برومبتات تصميم احترافية. Free design tools: color palettes, font pairing, brand guide helpers, and curated prompts for designers." />
     <link rel="canonical" href="https://moonberry-tool.github.io/" />
