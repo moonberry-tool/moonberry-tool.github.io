@@ -8,6 +8,7 @@ const TOOL_PATHS: Record<ActiveTool, string> = {
   fonts: '/fonts/',
   grid: '/grid/',
   prompts: '/prompts/',
+  imageGen: '/image-generator/',
   settings: '/settings/',
   admin: '/admin/',
 };
