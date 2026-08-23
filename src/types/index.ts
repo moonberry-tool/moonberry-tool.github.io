@@ -1,6 +1,6 @@
 export type ThemeMode = 'dark' | 'light';
 export type Language = 'ar' | 'en';
-export type ActiveTool = 'colors' | 'fonts' | 'grid' | 'prompts' | 'settings' | 'admin';
+export type ActiveTool = 'colors' | 'fonts' | 'grid' | 'prompts' | 'imageGen' | 'settings' | 'admin';
 export type ViewMode = 'landing' | 'app';
 
 export interface ColorItem {
