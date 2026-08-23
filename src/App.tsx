@@ -12,6 +12,7 @@ import { ColorsToolPreview } from './components/tools/ColorsToolPreview';
 import { FontsToolPreview } from './components/tools/FontsToolPreview';
 import { GridToolPreview } from './components/tools/GridToolPreview';
 import { PromptsToolPreview } from './components/tools/PromptsToolPreview';
+import { ImageGenToolPreview } from './components/tools/ImageGenToolPreview';
 import { SettingsView } from './components/tools/SettingsView';
 
 const MainContent: React.FC = () => {
@@ -51,6 +52,7 @@ const MainContent: React.FC = () => {
         {activeTool === 'fonts' && <FontsToolPreview />}
         {activeTool === 'grid' && <GridToolPreview />}
         {activeTool === 'prompts' && <PromptsToolPreview />}
+        {activeTool === 'imageGen' && <ImageGenToolPreview />}
         {activeTool === 'settings' && <SettingsView />}
       </AppShell>
     </div>
@@ -64,3 +66,4 @@ export default function App() {
     </AppProvider>
   );
 }
+
