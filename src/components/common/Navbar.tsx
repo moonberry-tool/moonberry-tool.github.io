@@ -14,7 +14,8 @@ import {
   ArrowRight,
   Sliders,
   Command,
-  Database
+  Database,
+  ImageIcon
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -85,6 +86,14 @@ export const Navbar: React.FC = () => {
                 >
                   <Sparkles className="w-3.5 h-3.5 text-[#c026d3]" />
                   <span>{isRtl ? 'البرومبتات' : 'Prompts'}</span>
+                </button>
+                <button
+                  onClick={() => openTool('imageGen')}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-slate-300 dark:text-slate-300 light:text-slate-600 hover:text-white dark:hover:text-white hover:bg-[#34D399]/20 transition-all"
+                  id="nav-link-imagegen"
+                >
+                  <ImageIcon className="w-3.5 h-3.5 text-[#34D399]" />
+                  <span>{isRtl ? 'توليد الصور' : 'Image AI'}</span>
                 </button>
               </nav>
             )}
