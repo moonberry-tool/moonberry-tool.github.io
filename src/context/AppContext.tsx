@@ -19,6 +19,10 @@ import { AuthModal } from '../components/common/AuthModal';
 const FREE_PLAN_LIMITED_MODEL_CREDITS = 2; // 2 free generations on non-Flux models
 const PAID_PLAN_PLACEHOLDER_CREDITS = 100; // TODO: replace once pricing plan is set
 
+// TODO: replace with your real email(s) — this account can approve/reject payments
+// in the Admin Panel. Must match the email used to log in on the site.
+export const ADMIN_EMAILS = ['admin@example.com'];
+
 // Map each tool to its own URL path, and back. Keeps the address bar in sync
 // with the app view, and lets a hard refresh / direct link land on the right tool.
 const TOOL_PATHS: Record<ActiveTool, string> = {
@@ -27,6 +31,7 @@ const TOOL_PATHS: Record<ActiveTool, string> = {
   grid: '/grid/',
   prompts: '/prompts/',
   imageGen: '/image-generator/',
+  pricing: '/pricing/',
   settings: '/settings/',
   admin: '/admin/',
 };
@@ -76,6 +81,8 @@ interface AppContextType {
   signInWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   consumeCredit: () => Promise<boolean>;
+  isAdmin: boolean;
+  refreshUserData: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -177,6 +184,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const isAdmin = !!user?.email && ADMIN_EMAILS.includes(user.email);
+
+  // Re-fetch the current user's plan/credits from Firestore (used after an
+  // admin approves a payment, so the paying user's own screen updates too).
+  const refreshUserData = async () => {
+    if (!user) return;
+    await ensureUserDoc(user);
+  };
+
   // Keep the address bar correct for a given tool/mode combo
   const syncUrl = (tool: ActiveTool, mode: ViewMode) => {
     const targetPath = mode === 'landing' ? '/' : TOOL_PATHS[tool];
@@ -276,6 +292,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         signInWithEmail,
         logout,
         consumeCredit,
+        isAdmin,
+        refreshUserData,
       }}
     >
       {children}
