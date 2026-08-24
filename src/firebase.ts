@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/authinication';
+import { getAuth } from 'firebase/authintication';
 
 // Public Firebase web config — safe to expose in client code.
 // Data access is controlled by Firestore Security Rules, not by hiding this config.
