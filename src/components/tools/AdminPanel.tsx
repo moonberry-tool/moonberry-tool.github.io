@@ -46,7 +46,7 @@ export const AdminPanel: React.FC = () => {
         credits: increment(PAID_PLAN_CREDITS),
       });
       await updateDoc(doc(db, 'paymentRequests', req.id), { status: 'approved' });
-      showToast(isRtl ? 'تمت الموافقة وتفعيل الخطة' : 'Approved and plan activated');
+      showToast(isRtl ? 'تمت الموافقة وتفعيل الخطة استمتع...' : 'Approved and plan activated');
     } catch (err) {
       console.error(err);
       showToast(isRtl ? 'حدث خطأ أثناء الموافقة' : 'Something went wrong approving this');
