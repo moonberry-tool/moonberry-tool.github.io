@@ -10,6 +10,7 @@ import {
   ChevronDown,
   Loader2,
   AlertCircle,
+  LogIn,
 } from 'lucide-react';
 
 interface ImageModel {
@@ -47,7 +48,7 @@ interface GeneratedImage {
 }
 
 export const ImageGenToolPreview: React.FC = () => {
-  const { language, showToast } = useApp();
+  const { language, showToast, user, credits, userPlan, openAuthModal, consumeCredit } = useApp();
   const isRtl = language === 'ar';
 
   const [prompt, setPrompt] = useState('');
@@ -70,6 +71,23 @@ export const ImageGenToolPreview: React.FC = () => {
       return;
     }
 
+    // Flux (and other isFree models) stay open to everyone, logged in or not.
+    if (!selectedModel.isFree) {
+      if (!user) {
+        showToast(isRtl ? 'يرجى تسجيل الدخول لاستخدام هذا الموديل' : 'Please log in to use this model');
+        openAuthModal();
+        return;
+      }
+      if (userPlan === 'free' && credits <= 0) {
+        showToast(
+          isRtl
+            ? 'خلصت استخدامك المجاني لهذا الموديل — الترقية للخطة المدفوعة قريبًا'
+            : "You've used your free generations for this model — paid upgrade coming soon"
+        );
+        return;
+      }
+    }
+
     setIsGenerating(true);
     setErrorMsg(null);
 
@@ -77,7 +95,17 @@ export const ImageGenToolPreview: React.FC = () => {
 
     // Preload the image so we only show it (and add to history) once it's actually ready
     const img = new Image();
-    img.onload = () => {
+    img.onload = async () => {
+      // Only deduct a credit after the image actually succeeded
+      if (!selectedModel.isFree) {
+        const allowed = await consumeCredit();
+        if (!allowed) {
+          setIsGenerating(false);
+          showToast(isRtl ? 'تعذر تأكيد الكريدت، حاول تاني' : 'Could not confirm credit, please try again');
+          return;
+        }
+      }
+
       const newImage: GeneratedImage = {
         id: 'img-' + Date.now(),
         url,
@@ -158,9 +186,16 @@ export const ImageGenToolPreview: React.FC = () => {
 
           {/* Model selector */}
           <div>
-            <label className="block text-xs font-bold text-slate-400 mb-2">
-              {isRtl ? 'الموديل' : 'Model'}
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-bold text-slate-400">
+                {isRtl ? 'الموديل' : 'Model'}
+              </label>
+              {user && userPlan === 'free' && (
+                <span className="text-[10px] font-bold text-amber-300">
+                  {isRtl ? `متبقي ${credits} استخدام مجاني` : `${credits} free uses left`}
+                </span>
+              )}
+            </div>
             <div className="grid grid-cols-1 gap-2">
               {IMAGE_MODELS.map(model => (
                 <button
@@ -186,6 +221,15 @@ export const ImageGenToolPreview: React.FC = () => {
                 </button>
               ))}
             </div>
+            {!user && (
+              <button
+                onClick={openAuthModal}
+                className="w-full mt-2 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white border border-white/10 hover:border-[#8b5cf6]/50 transition-all"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>{isRtl ? 'سجل دخولك لفتح باقي الموديلات' : 'Log in to unlock other models'}</span>
+              </button>
+            )}
           </div>
 
           {/* Aspect ratio selector */}
