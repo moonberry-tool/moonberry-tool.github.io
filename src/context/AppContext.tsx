@@ -21,7 +21,7 @@ const PAID_PLAN_PLACEHOLDER_CREDITS = 100; // TODO: replace once pricing plan is
 
 // TODO: replace with your real email(s) — this account can approve/reject payments
 // in the Admin Panel. Must match the email used to log in on the site.
-export const ADMIN_EMAILS = ['admin@example.com'];
+export const ADMIN_EMAILS = ['opaidamazed@gmail.com'];
 
 // Map each tool to its own URL path, and back. Keeps the address bar in sync
 // with the app view, and lets a hard refresh / direct link land on the right tool.
