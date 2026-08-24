@@ -17,7 +17,11 @@ import {
   Sparkle,
   ArrowRight,
   ArrowLeft,
-  ShieldAlert
+  ShieldAlert,
+  ImageIcon,
+  LogIn,
+  LogOut,
+  Coins
 } from 'lucide-react';
 
 interface AppShellProps {
@@ -34,7 +38,12 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     setActiveTool,
     setViewMode,
     isSidebarCollapsed,
-    toggleSidebar
+    toggleSidebar,
+    user,
+    userPlan,
+    credits,
+    openAuthModal,
+    logout
   } = useApp();
 
   const isRtl = language === 'ar';
@@ -71,6 +80,14 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       icon: <Sparkles className="w-5 h-5 text-[#FDE047]" />,
       badge: '24+',
       badgeColor: 'bg-[#FDE047]/20 text-[#FDE047]',
+    },
+    {
+      id: 'imageGen' as ActiveTool,
+      labelAr: 'توليد الصور بالذكاء الاصطناعي',
+      labelEn: 'AI Image Generator',
+      icon: <ImageIcon className="w-5 h-5 text-[#34D399]" />,
+      badge: 'NEW',
+      badgeColor: 'bg-[#34D399]/20 text-[#34D399]',
     },
   ];
 
@@ -220,6 +237,37 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
           {/* Quick Header Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Account: login button or user badge with credits */}
+            {user ? (
+              <div className="flex items-center gap-2 pl-1">
+                <div
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400/10 text-amber-300 border border-amber-400/20"
+                  title={isRtl ? 'الكريدت المتبقي على الموديلات المدفوعة' : 'Remaining credits for paid models'}
+                >
+                  <Coins className="w-3.5 h-3.5" />
+                  <span>{credits}</span>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#f43f5e] to-[#8b5cf6] flex items-center justify-center text-xs font-extrabold text-white shrink-0">
+                  {(user.displayName || user.email || '?').charAt(0).toUpperCase()}
+                </div>
+                <button
+                  onClick={logout}
+                  className="p-2 rounded-full border border-white/10 bg-white/5 text-slate-300 hover:text-[#f43f5e] hover:border-[#f43f5e]/60 transition-colors"
+                  title={isRtl ? 'تسجيل الخروج' : 'Log out'}
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={openAuthModal}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:border-[#8b5cf6]/60 transition-colors"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>{isRtl ? 'تسجيل الدخول' : 'Login'}</span>
+              </button>
+            )}
+
             <button
               onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
               className="px-3 py-1.5 rounded-full text-xs font-bold border border-white/10 bg-white/5 text-slate-300 hover:border-[#f43f5e] transition-colors"
