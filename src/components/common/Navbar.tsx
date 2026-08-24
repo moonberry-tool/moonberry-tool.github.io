@@ -15,7 +15,10 @@ import {
   Sliders,
   Command,
   Database,
-  ImageIcon
+  ImageIcon,
+  LogIn,
+  LogOut,
+  Coins
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -26,7 +29,11 @@ export const Navbar: React.FC = () => {
     setLanguage, 
     viewMode, 
     setViewMode, 
-    openTool 
+    openTool,
+    user,
+    credits,
+    openAuthModal,
+    logout
   } = useApp();
 
   const isRtl = language === 'ar';
@@ -99,8 +106,40 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Right Actions: Command Launcher, Backup, Theme, Language, Main CTA */}
+          {/* Right Actions: Account, Command Launcher, Backup, Theme, Language, Main CTA */}
           <div className="flex items-center gap-2 sm:gap-3">
+
+            {/* Account: login button or user badge with credits */}
+            {user ? (
+              <div className="hidden sm:flex items-center gap-2">
+                <div
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-400/10 text-amber-300 border border-amber-400/20"
+                  title={isRtl ? 'الكريدت المتبقي على الموديلات المدفوعة' : 'Remaining credits for paid models'}
+                >
+                  <Coins className="w-3.5 h-3.5" />
+                  <span>{credits}</span>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#f43f5e] to-[#8b5cf6] flex items-center justify-center text-xs font-extrabold text-white shrink-0">
+                  {(user.displayName || user.email || '?').charAt(0).toUpperCase()}
+                </div>
+                <button
+                  onClick={logout}
+                  className="p-2 rounded-full border transition-all bg-white/5 border-white/10 text-slate-300 hover:text-[#f43f5e] hover:border-[#f43f5e]/60"
+                  title={isRtl ? 'تسجيل الخروج' : 'Log out'}
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={openAuthModal}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all bg-white/5 border-white/10 text-slate-300 hover:text-white hover:border-[#8b5cf6]/60"
+                id="navbar-login-button"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>{isRtl ? 'تسجيل الدخول' : 'Login'}</span>
+              </button>
+            )}
             
             {/* Quick Command Launcher Button */}
             <button
