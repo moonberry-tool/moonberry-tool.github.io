@@ -6,8 +6,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { X, Copy, Check, Upload, Loader2, PartyPopper } from 'lucide-react';
 
 // TODO: replace with your real Orange Cash number and registered name.
-const ORANGE_CASH_NUMBER = '01000000000';
-const ORANGE_CASH_NAME = 'اسمك هنا';
+const ORANGE_CASH_NUMBER = '012 23093974;
+const ORANGE_CASH_NAME = 'moonberry team';
 const PAID_PLAN_PRICE_EGP = 99;
 
 interface UpgradeModalProps {
