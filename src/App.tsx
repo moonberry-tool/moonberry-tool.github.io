@@ -13,6 +13,8 @@ import { FontsToolPreview } from './components/tools/FontsToolPreview';
 import { GridToolPreview } from './components/tools/GridToolPreview';
 import { PromptsToolPreview } from './components/tools/PromptsToolPreview';
 import { ImageGenToolPreview } from './components/tools/ImageGenToolPreview';
+import { PricingPage } from './components/tools/PricingPage';
+import { AdminPanel } from './components/tools/AdminPanel';
 import { SettingsView } from './components/tools/SettingsView';
 
 const MainContent: React.FC = () => {
@@ -53,6 +55,8 @@ const MainContent: React.FC = () => {
         {activeTool === 'grid' && <GridToolPreview />}
         {activeTool === 'prompts' && <PromptsToolPreview />}
         {activeTool === 'imageGen' && <ImageGenToolPreview />}
+        {activeTool === 'pricing' && <PricingPage />}
+        {activeTool === 'admin' && <AdminPanel />}
         {activeTool === 'settings' && <SettingsView />}
       </AppShell>
     </div>
