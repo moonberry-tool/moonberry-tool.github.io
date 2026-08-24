@@ -1,14 +1,43 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { db, storage } from '../../firebase';
+import { db } from '../../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { X, Copy, Check, Upload, Loader2, PartyPopper } from 'lucide-react';
 
-// TODO: replace with your real Orange Cash number and registered name.
-const ORANGE_CASH_NUMBER = '012 23093974';
-const ORANGE_CASH_NAME = 'moonberry team';
+// TODO: update the registered name to match the Orange Cash account.
+const ORANGE_CASH_NUMBER = '01223093974';
+const ORANGE_CASH_NAME = 'اسمك هنا';
 const PAID_PLAN_PRICE_EGP = 99;
+
+// Firebase Storage now requires a paid (Blaze) plan, so instead we compress the
+// screenshot client-side and store it directly inside the Firestore document as
+// base64 — stays fully on the free Spark plan. Firestore's per-document limit is
+// 1MiB, so we resize + compress aggressively to stay well under that.
+const compressImageToBase64 = (file: File, maxWidth = 800, quality = 0.65): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas not supported'));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => reject(new Error('Could not read image'));
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => reject(new Error('Could not read file'));
+    reader.readAsDataURL(file);
+  });
+};
 
 interface UpgradeModalProps {
   onClose: () => void;
@@ -41,16 +70,21 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({ onClose }) => {
     setIsSubmitting(true);
     setErrorMsg(null);
     try {
-      const fileRef = ref(storage, `paymentProofs/${user.uid}/${Date.now()}-${screenshotFile.name}`);
-      await uploadBytes(fileRef, screenshotFile);
-      const screenshotUrl = await getDownloadURL(fileRef);
+      const screenshotBase64 = await compressImageToBase64(screenshotFile);
+
+      // Leave headroom under Firestore's 1MiB document cap for the other fields
+      if (screenshotBase64.length > 900_000) {
+        setErrorMsg(isRtl ? 'الصورة كبيرة جدًا، جرب لقطة شاشة أصغر' : 'Image is too large, try a smaller screenshot');
+        setIsSubmitting(false);
+        return;
+      }
 
       await addDoc(collection(db, 'paymentRequests'), {
         userId: user.uid,
         userEmail: user.email,
         senderPhone: senderPhone.trim(),
         amount: PAID_PLAN_PRICE_EGP,
-        screenshotUrl,
+        screenshotBase64,
         status: 'pending',
         createdAt: serverTimestamp(),
       });
