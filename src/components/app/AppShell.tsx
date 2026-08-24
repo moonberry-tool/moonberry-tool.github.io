@@ -21,7 +21,9 @@ import {
   ImageIcon,
   LogIn,
   LogOut,
-  Coins
+  Coins,
+  CreditCard,
+  ShieldCheck
 } from 'lucide-react';
 
 interface AppShellProps {
@@ -43,7 +45,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     userPlan,
     credits,
     openAuthModal,
-    logout
+    logout,
+    isAdmin
   } = useApp();
 
   const isRtl = language === 'ar';
@@ -89,6 +92,22 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
       badge: 'NEW',
       badgeColor: 'bg-[#34D399]/20 text-[#34D399]',
     },
+    {
+      id: 'pricing' as ActiveTool,
+      labelAr: 'الأسعار والترقية',
+      labelEn: 'Pricing & Upgrade',
+      icon: <CreditCard className="w-5 h-5 text-amber-300" />,
+    },
+    ...(isAdmin
+      ? [
+          {
+            id: 'admin' as ActiveTool,
+            labelAr: 'لوحة التحكم',
+            labelEn: 'Admin Panel',
+            icon: <ShieldCheck className="w-5 h-5 text-emerald-400" />,
+          },
+        ]
+      : []),
   ];
 
   return (
