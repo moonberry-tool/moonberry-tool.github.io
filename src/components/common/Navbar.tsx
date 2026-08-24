@@ -18,7 +18,8 @@ import {
   ImageIcon,
   LogIn,
   LogOut,
-  Coins
+  Coins,
+  CreditCard
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -101,6 +102,14 @@ export const Navbar: React.FC = () => {
                 >
                   <ImageIcon className="w-3.5 h-3.5 text-[#34D399]" />
                   <span>{isRtl ? 'توليد الصور' : 'Image AI'}</span>
+                </button>
+                <button
+                  onClick={() => openTool('pricing')}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-slate-300 dark:text-slate-300 light:text-slate-600 hover:text-white dark:hover:text-white hover:bg-amber-400/20 transition-all"
+                  id="nav-link-pricing"
+                >
+                  <CreditCard className="w-3.5 h-3.5 text-amber-300" />
+                  <span>{isRtl ? 'الأسعار' : 'Pricing'}</span>
                 </button>
               </nav>
             )}
@@ -215,3 +224,4 @@ export const Navbar: React.FC = () => {
     </>
   );
 };
+
