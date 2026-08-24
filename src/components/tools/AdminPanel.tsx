@@ -13,7 +13,7 @@ interface PaymentRequest {
   userEmail: string;
   senderPhone: string;
   amount: number;
-  screenshotUrl: string;
+  screenshotBase64: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt: any;
 }
@@ -121,8 +121,8 @@ export const AdminPanel: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {visibleRequests.map(req => (
             <div key={req.id} className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden">
-              <a href={req.screenshotUrl} target="_blank" rel="noreferrer" className="block relative group">
-                <img src={req.screenshotUrl} alt="Payment proof" className="w-full h-40 object-cover" />
+              <a href={req.screenshotBase64} target="_blank" rel="noreferrer" className="block relative group">
+                <img src={req.screenshotBase64} alt="Payment proof" className="w-full h-40 object-cover" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
                   <ExternalLink className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
