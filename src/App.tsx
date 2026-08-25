@@ -3,19 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navbar } from './components/common/Navbar';
 import { LandingPage } from './components/landing/LandingPage';
 import { AppShell } from './components/app/AppShell';
-import { ColorsToolPreview } from './components/tools/ColorsToolPreview';
-import { FontsToolPreview } from './components/tools/FontsToolPreview';
-import { GridToolPreview } from './components/tools/GridToolPreview';
-import { PromptsToolPreview } from './components/tools/PromptsToolPreview';
-import { ImageGenToolPreview } from './components/tools/ImageGenToolPreview';
-import { PricingPage } from './components/tools/PricingPage';
-import { AdminPanel } from './components/tools/AdminPanel';
-import { SettingsView } from './components/tools/SettingsView';
+import { MoonLoader } from './components/common/MoonLoader';
+
+// Lazy-loaded: each tool only downloads its own code when it's actually opened,
+// instead of all of them loading up front on the very first visit.
+const ColorsToolPreview = lazy(() => import('./components/tools/ColorsToolPreview').then(m => ({ default: m.ColorsToolPreview })));
+const FontsToolPreview = lazy(() => import('./components/tools/FontsToolPreview').then(m => ({ default: m.FontsToolPreview })));
+const GridToolPreview = lazy(() => import('./components/tools/GridToolPreview').then(m => ({ default: m.GridToolPreview })));
+const PromptsToolPreview = lazy(() => import('./components/tools/PromptsToolPreview').then(m => ({ default: m.PromptsToolPreview })));
+const ImageGenToolPreview = lazy(() => import('./components/tools/ImageGenToolPreview').then(m => ({ default: m.ImageGenToolPreview })));
+const PricingPage = lazy(() => import('./components/tools/PricingPage').then(m => ({ default: m.PricingPage })));
+const AdminPanel = lazy(() => import('./components/tools/AdminPanel').then(m => ({ default: m.AdminPanel })));
+const SettingsView = lazy(() => import('./components/tools/SettingsView').then(m => ({ default: m.SettingsView })));
 
 const MainContent: React.FC = () => {
   const { viewMode, activeTool, toggleTheme, language, setLanguage } = useApp();
@@ -50,14 +54,16 @@ const MainContent: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <AppShell>
-        {activeTool === 'colors' && <ColorsToolPreview />}
-        {activeTool === 'fonts' && <FontsToolPreview />}
-        {activeTool === 'grid' && <GridToolPreview />}
-        {activeTool === 'prompts' && <PromptsToolPreview />}
-        {activeTool === 'imageGen' && <ImageGenToolPreview />}
-        {activeTool === 'pricing' && <PricingPage />}
-        {activeTool === 'admin' && <AdminPanel />}
-        {activeTool === 'settings' && <SettingsView />}
+        <Suspense fallback={<MoonLoader />}>
+          {activeTool === 'colors' && <ColorsToolPreview />}
+          {activeTool === 'fonts' && <FontsToolPreview />}
+          {activeTool === 'grid' && <GridToolPreview />}
+          {activeTool === 'prompts' && <PromptsToolPreview />}
+          {activeTool === 'imageGen' && <ImageGenToolPreview />}
+          {activeTool === 'pricing' && <PricingPage />}
+          {activeTool === 'admin' && <AdminPanel />}
+          {activeTool === 'settings' && <SettingsView />}
+        </Suspense>
       </AppShell>
     </div>
   );
