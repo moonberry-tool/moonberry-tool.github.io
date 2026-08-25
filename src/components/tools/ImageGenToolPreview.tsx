@@ -27,17 +27,19 @@ interface ImageModel {
 // yet) every model is callable — the free/limited badges are just a preview of what's coming.
 const IMAGE_MODELS: ImageModel[] = [
   { id: 'flux', labelAr: 'Flux', labelEn: 'Flux', isFree: true, badgeAr: 'مجاني وغير محدود', badgeEn: 'Free & Unlimited' },
-  { id: 'turbo', labelAr: 'Turbo', labelEn: 'Turbo', isFree: true, badgeAr: 'مجاني وغير محدود', badgeEn: 'Free & Unlimited' },
   { id: 'gptimage', labelAr: 'GPT Image', labelEn: 'GPT Image', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
-  { id: 'seedream', labelAr: 'Seedream', labelEn: 'Seedream', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
+  { id: 'gpt-image-2', labelAr: 'GPT Image 2.0', labelEn: 'GPT Image 2.0', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
   { id: 'nanobanana', labelAr: 'Nano Banana', labelEn: 'Nano Banana', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
+  { id: 'nanobanana-2', labelAr: 'Nano Banana 2', labelEn: 'Nano Banana 2', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
+  { id: 'nanobanana-pro', labelAr: 'Nano Banana Pro', labelEn: 'Nano Banana Pro', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
 ];
 
 const ASPECT_RATIOS = [
-  { id: 'square', labelAr: 'مربع', labelEn: 'Square', width: 1024, height: 1024 },
-  { id: 'portrait', labelAr: 'عمودي', labelEn: 'Portrait', width: 832, height: 1216 },
-  { id: 'landscape', labelAr: 'أفقي', labelEn: 'Landscape', width: 1216, height: 832 },
-  { id: 'story', labelAr: 'ستوري', labelEn: 'Story', width: 1080, height: 1920 },
+  { id: '1:1', labelAr: '1:1', labelEn: '1:1', width: 1024, height: 1024 },
+  { id: '16:9', labelAr: '16:9', labelEn: '16:9', width: 1280, height: 720 },
+  { id: '9:16', labelAr: '9:16', labelEn: '9:16', width: 720, height: 1280 },
+  { id: '4:3', labelAr: '4:3', labelEn: '4:3', width: 1024, height: 768 },
+  { id: '3:4', labelAr: '3:4', labelEn: '3:4', width: 768, height: 1024 },
 ];
 
 interface GeneratedImage {
@@ -237,7 +239,7 @@ export const ImageGenToolPreview: React.FC = () => {
             <label className="block text-xs font-bold text-slate-400 mb-2">
               {isRtl ? 'نسبة الأبعاد' : 'Aspect Ratio'}
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {ASPECT_RATIOS.map(ratio => (
                 <button
                   key={ratio.id}
