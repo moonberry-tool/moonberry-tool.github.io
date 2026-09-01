@@ -27,8 +27,8 @@ interface ImageModel {
 // yet) every model is callable — the free/limited badges are just a preview of what's coming.
 const IMAGE_MODELS: ImageModel[] = [
   { id: 'flux', labelAr: 'Flux', labelEn: 'Flux', isFree: true, badgeAr: 'مجاني وغير محدود', badgeEn: 'Free & Unlimited' },
-  { id: 'gptimage', labelAr: 'GPT Image', labelEn: 'GPT Image', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
   { id: 'gpt-image-2', labelAr: 'GPT Image 2.0', labelEn: 'GPT Image 2.0', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
+  { id: 'gptimage-large', labelAr: 'GPT Image Large', labelEn: 'GPT Image Large', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
   { id: 'nanobanana', labelAr: 'Nano Banana', labelEn: 'Nano Banana', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
   { id: 'nanobanana-2', labelAr: 'Nano Banana 2', labelEn: 'Nano Banana 2', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
   { id: 'nanobanana-pro', labelAr: 'Nano Banana Pro', labelEn: 'Nano Banana Pro', isFree: false, badgeAr: 'استخدام محدود', badgeEn: 'Limited Use' },
@@ -41,6 +41,11 @@ const ASPECT_RATIOS = [
   { id: '4:3', labelAr: '4:3', labelEn: '4:3', width: 1024, height: 768 },
   { id: '3:4', labelAr: '3:4', labelEn: '3:4', width: 768, height: 1024 },
 ];
+
+// Requests go through our Cloudflare Worker, which holds the Pollinations
+// secret key server-side and forwards the request — the key is never exposed
+// in the browser.
+const IMAGE_PROXY_URL = 'https://moonberry-image-proxy.opaidamazed.workers.dev';
 
 interface GeneratedImage {
   id: string;
@@ -61,10 +66,10 @@ export const ImageGenToolPreview: React.FC = () => {
   const [history, setHistory] = useState<GeneratedImage[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const buildPollinationsUrl = (): string => {
+  const buildImageRequestUrl = (): string => {
     const encodedPrompt = encodeURIComponent(prompt.trim());
     const seed = Math.floor(Math.random() * 1_000_000);
-    return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=${selectedRatio.width}&height=${selectedRatio.height}&model=${selectedModel.id}&seed=${seed}&nologo=true`;
+    return `${IMAGE_PROXY_URL}/?prompt=${encodedPrompt}&width=${selectedRatio.width}&height=${selectedRatio.height}&model=${selectedModel.id}&seed=${seed}`;
   };
 
   const handleGenerate = async () => {
@@ -93,7 +98,7 @@ export const ImageGenToolPreview: React.FC = () => {
     setIsGenerating(true);
     setErrorMsg(null);
 
-    const url = buildPollinationsUrl();
+    const url = buildImageRequestUrl();
 
     // Preload the image so we only show it (and add to history) once it's actually ready
     const img = new Image();
