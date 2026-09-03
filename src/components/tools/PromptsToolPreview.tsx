@@ -82,25 +82,14 @@ export const PromptsToolPreview: React.FC = () => {
     }
     setIsGeneratingAi(true);
     try {
-      const response = await fetch('https://text.pollinations.ai/openai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'openai',
-          messages: [
-            {
-              role: 'system',
-              content:
-                'You are an expert AI image-generation prompt engineer. Turn the user\'s idea into ONE single, vivid, professional prompt in English for AI image generation. Include subject, style, lighting, and composition details. Return ONLY the prompt text, no explanations, no quotes, no markdown.',
-            },
-            { role: 'user', content: aiIdea.trim() },
-          ],
-        }),
-      });
+      const instruction = `You are an expert AI image-generation prompt engineer. Turn the following idea into ONE single, vivid, professional prompt in English for AI image generation, including style, lighting, and composition details. Return ONLY the prompt text itself — no explanations, no quotes, no markdown, no labels.\n\nIdea: ${aiIdea.trim()}`;
+
+      const response = await fetch(
+        `https://text.pollinations.ai/${encodeURIComponent(instruction)}?model=openai`
+      );
 
       if (!response.ok) throw new Error('Request failed');
-      const data = await response.json();
-      const generated = data?.choices?.[0]?.message?.content?.trim();
+      const generated = (await response.text()).trim();
 
       if (!generated) throw new Error('Empty response');
       setAiPrompt(generated);
