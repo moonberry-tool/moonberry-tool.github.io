@@ -78,11 +78,9 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     },
     {
       id: 'prompts' as ActiveTool,
-      labelAr: 'مكتبة البرومبتات',
-      labelEn: 'Curated Prompts',
+      labelAr: 'مولّد البرومبتات',
+      labelEn: 'Prompt Generator',
       icon: <Sparkles className="w-5 h-5 text-[#FDE047]" />,
-      badge: '24+',
-      badgeColor: 'bg-[#FDE047]/20 text-[#FDE047]',
     },
     {
       id: 'imageGen' as ActiveTool,
