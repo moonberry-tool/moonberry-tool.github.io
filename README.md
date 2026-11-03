@@ -9,7 +9,7 @@
 **A free, all-in-one toolkit that helps designers move from idea to production faster —
 color palettes, font pairing, safe-area grids, and a curated prompt library, all in one clean interface.**
 
-**مجموعة أدوات إبداعية مجانية بتساعد المصممين يشتغلوا أسرع وأدق —
+**مجموعة أدوات إبداعية مجانية تساعد المصممين أن يعملوا أسرع وأدق —
 باليتات ألوان، تناسق خطوط، مقاسات ومناطق أمان، ومكتبة برومبتات، كل ده في مكان واحد.**
 
 <br/>
